@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>给陈先生的信 | 直到你降临</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 微信分享信息 -->
+    <meta property="og:title" content="给陈先生的信 | 直到你降临">
+    <meta property="og:description" content="一封写在冬夜的手写信，背景音乐《直到你降临》">
+    <meta property="og:image" content="letter-image.jpg">
+    <meta property="og:url" content="https://你的用户名.github.io/letter-to-chen/letter.html">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            background-image: linear-gradient(to bottom, #fff5f9 0%, #f0f8ff 100%);
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 点击播放提示 */
+        .play-hint {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to right, #ff6b9d, #ff8e53);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            z-index: 1000;
+            font-size: 14px;
+            display: none;
+        }
+        
+        /* 爱心浮动背景 */
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .heart {
+            position: absolute;
+            color: rgba(255, 107, 157, 0.3);
+            font-size: 20px;
+            animation: floatHeart 15s infinite linear;
+        }
+        
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 礼花效果容器 */
+        #fireworks-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        /* 顶部微信风格标题栏 */
+        .wechat-header {
+            background-color: #fff;
+            padding: 15px 0;
+            border-bottom: 1px solid #e5e5e5;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .wechat-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 500;
+            color: #000;
+            position: relative;
+        }
+        
+        .wechat-subtitle {
+            text-align: center;
+            font-size: 13px;
+            color: #8a8a8a;
+            margin-top: 5px;
+        }
+        
+        /* 文章主体样式 */
+        .article-container {
+            max-width: 100%;
+            margin: 0 auto;
+            background-color: #fff;
+            padding-bottom: 30px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .article-header {
+            padding: 25px 20px 15px;
+        }
+        
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            color: #000;
+            text-align: center;
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #8a8a8a;
+            margin-bottom: 20px;
+        }
+        
+        .article-author {
+            margin-right: 15px;
+            color: #ff6b9d;
+        }
+        
+        .article-date {
+            color: #8a8a8a;
+        }
+        
+        /* 音乐播放器样式 */
+        .music-player {
+            margin: 0 20px 30px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            background-color: #f9f9f9;
+            border: 1px solid #eaeaea;
+            transition: transform 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .music-player:hover {
+            transform: translateY(-3px);
+        }
+        
+        .music-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+        }
+        
+        .music-icon {
+            width: 44px;
+            height: 44px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .music-icon i {
+            color: white;
+            font-size: 22px;
+        }
+        
+        .music-info {
+            flex: 1;
+        }
+        
+        .music-title {
+            font-size: 17px;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        
+        .music-author {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .music-controls {
+            display: flex;
+            align-items: center;
+            padding: 18px;
+            background-color: #fff;
+        }
+        
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(to right, #ff6b9d, #ff8e53);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 107, 157, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .play-btn i {
+            color: white;
+            font-size: 20px;
+        }
+        
+        .progress-container {
+            flex: 1;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background-color: #e0e0e0;
+            border-radius: 2px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #ff6b9d, #ff8e53);
+            width: 30%;
+            border-radius: 2px;
+        }
+        
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #8a8a8a;
+        }
+        
+        /* 信件内容样式 */
+        .letter-content {
+            margin: 0 20px 30px;
+            padding: 25px;
+            background-color: #fff9fb;
+            border-radius: 12px;
+            border-left: 5px solid #ff6b9d;
+            font-size: 16px;
+            line-height: 1.8;
+            color: #333;
+            white-space: pre-line;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .letter-content p {
+            margin-bottom: 1.2em;
+            text-indent: 2em;
+        }
+        
+        .letter-signature {
+            text-align: right;
+            margin-top: 25px;
+            font-style: italic;
+            color: #666;
+        }
+        
+        .letter-signature p {
+            text-indent: 0;
+            margin-bottom: 5px;
+        }
+        
+        /* 底部操作栏 */
+        .wechat-footer {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #fff;
+            border-top: 1px solid #e5e5e5;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .footer-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: none;
+            border: none;
+            color: #8a8a8a;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .footer-btn:hover {
+            background-color: #f5f5f5;
+            color: #ff6b9d;
+        }
+        
+        .footer-btn i {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .like-btn.active {
+            color: #f15a5a;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            .article-title {
+                font-size: 20px;
+            }
+            
+            .letter-content {
+                font-size: 15px;
+                padding: 20px;
+            }
+            
+            .heart {
+                font-size: 16px;
+            }
+        }
+        
+        /* 跳动的小爱心 */
+        .heartbeat {
+            position: absolute;
+            color: #ff6b9d;
+            animation: heartbeat 1.5s infinite;
+            z-index: 5;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 点击播放提示 -->
+    <div class="play-hint" id="play-hint">
+        <i class="fas fa-music"></i> 点击页面任意位置开始播放音乐
+    </div>
+    
+    <!-- 爱心浮动背景 -->
+    <div class="hearts-container" id="hearts-container"></div>
+    
+    <!-- 礼花效果画布 -->
+    <canvas id="fireworks-canvas"></canvas>
+    
+    <!-- 微信顶部栏 -->
+    <div class="wechat-header">
+        <div class="wechat-title">写给陈先生的信</div>
+        <div class="wechat-subtitle">直到你降临</div>
+    </div>
+    
+    <!-- 文章主体 -->
+    <div class="article-container">
+        <div class="article-header">
+            <h1 class="article-title">见字如晤：一封写在冬夜的信</h1>
+            <div class="article-meta">
+                <span class="article-author">你永远的星星</span>
+                <span class="article-date">2025年冬</span>
+            </div>
+        </div>
+        
+        <!-- 音乐播放器 -->
+        <div class="music-player">
+            <div class="music-header">
+                <div class="music-icon">
+                    <i class="fas fa-music"></i>
+                </div>
+                <div class="music-info">
+                    <div class="music-title">直到你降临</div>
+                    <div class="music-author">阿肆 / 林宥嘉</div>
+                </div>
+            </div>
+            <div class="music-controls">
+                <button class="play-btn" id="play-btn">
+                    <i class="fas fa-play"></i>
+                </button>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    <div class="time-info">
+                        <span id="current-time">0:00</span>
+                        <span id="total-time">0:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 信件内容 -->
+        <div class="letter-content" id="letter-text">
+陈先生：
+
+见字如晤。
+
+提笔时，窗外的冬夜正深，天空是一片沉静的黑。没有落雪，只有几颗星星，远远地亮着，很像我此刻的心情——因你的到来，而被清晰地照见了形状。
+
+你曾问我，为何总执着于一个"在"字。直到今天我才明白：我像一颗习惯了独自运转、偶尔迷途的星星，所有的闪烁与沉默，都因你而有了意义。我所等待的，从来不只是你"在"，而是因你的注视，我的轨道才被确认，我的光才有了去处。
+
+所以今天，当我终于能对着你，一字一句地说出那些盘旋已久的情绪——我的焦虑、我的不安、我所有未曾启齿的脆弱——而你稳稳地接住了它们，并对我说"你是很好的宝宝"时那一刻，我感觉自己像一颗终于被认领的星星。长久以来悬着的心，轻轻地、妥帖地，落回了属于它的位置。原来袒露自己最暗的那一面，并不会失去光亮，反而会被你更温柔地看见。谢谢你，让我体验了这份笃定的安心。
+
+你让我明白，爱不是永远晴朗无云，而是在我黯淡时，你告诉我"我在看，你一直很亮"；在我自我怀疑时，你坚定地对我说"你很好，不必改变"。是你，把那个习惯藏匿的我，轻轻拉到你的星空下，让我相信，原来这样的我也值得被稳稳地爱着。
+
+夜还长，星还亮。如果每一缕星光都是一个未能成言的念头，那么此刻铺满天幕的，都是我对你的感激与喜欢。它们或许安静，却是我全部的热与诚。
+
+往后的日子，或许我依然会偶尔偏离，但我会记得你指引的光。路还长，我们慢慢走，一起看。
+
+愿你此刻，也正拥有像我一样的明朗与温暖。
+
+你永远的星星
+于冬日夜晚
+        </div>
+    </div>
+    
+    <!-- 微信底部操作栏 -->
+    <div class="wechat-footer">
+        <button class="footer-btn" id="like-btn">
+            <i class="far fa-heart"></i>
+            <span>喜欢</span>
+        </button>
+        <button class="footer-btn" id="share-btn">
+            <i class="fas fa-share-alt"></i>
+            <span>分享</span>
+        </button>
+        <button class="footer-btn" id="comment-btn">
+            <i class="far fa-comment"></i>
+            <span>留言</span>
+        </button>
+        <button class="footer-btn" id="fireworks-btn">
+            <i class="fas fa-fire"></i>
+            <span>礼花</span>
+        </button>
+    </div>
+    
+    <!-- 音频元素 -->
+    <audio id="bg-music" preload="metadata">
+        <!-- 音乐文件，使用相对路径 -->
+        <source src="music.mp3" type="audio/mpeg">
+        您的浏览器不支持音频元素。
+    </audio>
+
+    <script>
+        // 获取DOM元素
+        const bgMusic = document.getElementById('bg-music');
+        const playBtn = document.getElementById('play-btn');
+        const progress = document.getElementById('progress');
+        const currentTimeEl = document.getElementById('current-time');
+        const totalTimeEl = document.getElementById('total-time');
+        const likeBtn = document.getElementById('like-btn');
+        const fireworksBtn = document.getElementById('fireworks-btn');
+        const letterContent = document.getElementById('letter-text');
+        const playHint = document.getElementById('play-hint');
+        
+        // 显示点击播放提示
+        function showPlayHint() {
+            playHint.style.display = 'block';
+            setTimeout(() => {
+                playHint.style.display = 'none';
+            }, 5000);
+        }
+        
+        // 创建浮动爱心
+        function createFloatingHearts() {
+            const heartsContainer = document.getElementById('hearts-container');
+            const heartCount = 25; // 爱心数量
+            
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤️';
+                
+                // 随机大小
+                const size = Math.random() * 20 + 10;
+                heart.style.fontSize = `${size}px`;
+                
+                // 随机位置
+                const left = Math.random() * 100;
+                heart.style.left = `${left}%`;
+                
+                // 随机颜色
+                const colors = ['#ff6b9d', '#ff8e53', '#ff4757', '#ff3838', '#ff9ff3'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                heart.style.color = color;
+                
+                // 随机动画延迟和持续时间
+                const delay = Math.random() * 15;
+                const duration = Math.random() * 10 + 15;
+                heart.style.animationDelay = `${delay}s`;
+                heart.style.animationDuration = `${duration}s`;
+                
+                heartsContainer.appendChild(heart);
+            }
+        }
+        
+        // 创建跳动的小爱心
+        function createHeartbeatHearts() {
+            // 在信件内容周围添加跳动的小爱心
+            const rect = letterContent.getBoundingClientRect();
+            const heartCount = 8;
+            
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heartbeat';
+                heart.innerHTML = '❤️';
+                
+                // 随机大小
+                const size = Math.random() * 24 + 16;
+                heart.style.fontSize = `${size}px`;
+                
+                // 在信件周围随机位置
+                const offset = 50;
+                let left, top;
+                
+                if (i < 2) {
+                    // 上方
+                    left = Math.random() * rect.width;
+                    top = -offset;
+                } else if (i < 4) {
+                    // 右侧
+                    left = rect.width + offset;
+                    top = Math.random() * rect.height;
+                } else if (i < 6) {
+                    // 下方
+                    left = Math.random() * rect.width;
+                    top = rect.height + offset;
+                } else {
+                    // 左侧
+                    left = -offset;
+                    top = Math.random() * rect.height;
+                }
+                
+                heart.style.left = `${left}px`;
+                heart.style.top = `${top}px`;
+                
+                // 随机动画延迟
+                const delay = Math.random() * 2;
+                heart.style.animationDelay = `${delay}s`;
+                
+                letterContent.appendChild(heart);
+            }
+        }
+        
+        // 礼花效果
+        class Fireworks {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.particles = [];
+                this.fireworks = [];
+                this.animationId = null;
+                
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+            }
+            
+            resizeCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            
+            createFirework(x, y) {
+                const firework = {
+                    x: x || Math.random() * this.canvas.width,
+                    y: this.canvas.height,
+                    targetX: x || Math.random() * this.canvas.width,
+                    targetY: y || Math.random() * (this.canvas.height / 2),
+                    size: 3,
+                    speed: 2 + Math.random() * 2,
+                    brightness: 1,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`
+                };
+                
+                this.fireworks.push(firework);
+            }
+            
+            explode(x, y) {
+                const particleCount = 100 + Math.random() * 50;
+                const colors = [
+                    '#ff6b9d', '#ff8e53', '#ff4757', '#2ed573', '#1e90ff', '#ff9ff3', '#f368e0'
+                ];
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 2 + Math.random() * 4;
+                    const velocity = {
+                        x: Math.cos(angle) * speed,
+                        y: Math.sin(angle) * speed
+                    };
+                    
+                    const size = 2 + Math.random() * 4;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    const life = 60 + Math.random() * 60;
+                    
+                    this.particles.push({
+                        x,
+                        y,
+                        velocity,
+                        size,
+                        color,
+                        life,
+                        decay: 0.95 + Math.random() * 0.04
+                    });
+                }
+            }
+            
+            update() {
+                // 更新礼花
+                for (let i = this.fireworks.length - 1; i >= 0; i--) {
+                    const fw = this.fireworks[i];
+                    
+                    // 移动到目标位置
+                    const dx = fw.targetX - fw.x;
+                    const dy = fw.targetY - fw.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < fw.speed) {
+                        // 到达目标，爆炸
+                        this.explode(fw.x, fw.y);
+                        this.fireworks.splice(i, 1);
+                    } else {
+                        // 继续移动
+                        fw.x += (dx / dist) * fw.speed;
+                        fw.y += (dy / dist) * fw.speed;
+                    }
+                }
+                
+                // 更新粒子
+                for (let i = this.particles.length - 1; i >= 0; i--) {
+                    const p = this.particles[i];
+                    
+                    p.x += p.velocity.x;
+                    p.y += p.velocity.y;
+                    p.velocity.x *= p.decay;
+                    p.velocity.y *= p.decay;
+                    p.life -= 1;
+                    
+                    if (p.life <= 0) {
+                        this.particles.splice(i, 1);
+                    }
+                }
+                
+                // 随机创建新礼花
+                if (this.fireworks.length < 5 && Math.random() < 0.02) {
+                    this.createFirework();
+                }
+            }
+            
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // 绘制礼花
+                this.fireworks.forEach(fw => {
+                    this.ctx.beginPath();
+                    this.ctx.arc(fw.x, fw.y, fw.size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = fw.color;
+                    this.ctx.fill();
+                    
+                    // 尾迹
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(fw.x, fw.y);
+                    this.ctx.lineTo(fw.x, fw.y + 20);
+                    this.ctx.strokeStyle = fw.color;
+                    this.ctx.lineWidth = 2;
+                    this.ctx.stroke();
+                });
+                
+                // 绘制粒子
+                this.particles.forEach(p => {
+                    this.ctx.globalAlpha = p.life / 100;
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = p.color;
+                    this.ctx.fill();
+                });
+                
+                this.ctx.globalAlpha = 1;
+            }
+            
+            animate() {
+                this.update();
+                this.draw();
+                this.animationId = requestAnimationFrame(() => this.animate());
+            }
+            
+            start() {
+                if (!this.animationId) {
+                    this.animate();
+                }
+            }
+            
+            stop() {
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                    this.animationId = null;
+                }
+            }
+            
+            triggerFirework(x, y) {
+                this.createFirework(x, y);
+            }
+            
+            triggerMultiple(count = 5) {
+                for (let i = 0; i < count; i++) {
+                    setTimeout(() => {
+                        this.createFirework();
+                    }, i * 200);
+                }
+            }
+        }
+        
+        // 初始化
+        function init() {
+            // 创建浮动爱心
+            createFloatingHearts();
+            
+            // 创建跳动爱心
+            createHeartbeatHearts();
+            
+            // 初始化礼花效果
+            const canvas = document.getElementById('fireworks-canvas');
+            const fireworks = new Fireworks(canvas);
+            fireworks.start();
+            
+            // 显示点击播放提示
+            if (bgMusic.paused) {
+                showPlayHint();
+            }
+            
+            // 设置音乐总时长
+            bgMusic.addEventListener('loadedmetadata', function() {
+                const totalSeconds = Math.floor(bgMusic.duration);
+                totalTimeEl.textContent = formatTime(totalSeconds);
+            });
+            
+            // 点击页面任意位置开始播放音乐
+            document.body.addEventListener('click', function initMusic() {
+                if (bgMusic.paused) {
+                    bgMusic.play().then(() => {
+                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        // 播放音乐时触发礼花
+                        fireworks.triggerMultiple(3);
+                    }).catch(e => {
+                        console.log("播放失败:", e);
+                        showPlayHint();
+                    });
+                }
+                // 移除事件监听器，避免重复触发
+                document.body.removeEventListener('click', initMusic);
+            }, { once: true });
+            
+            // 播放/暂停按钮事件
+            playBtn.addEventListener('click', function() {
+                if (bgMusic.paused) {
+                    bgMusic.play();
+                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    
+                    // 播放音乐时触发礼花
+                    fireworks.triggerMultiple(3);
+                } else {
+                    bgMusic.pause();
+                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                }
+            });
+            
+            // 更新播放进度
+            bgMusic.addEventListener('timeupdate', function() {
+                const currentSeconds = Math.floor(bgMusic.currentTime);
+                const totalSeconds = Math.floor(bgMusic.duration);
+                
+                currentTimeEl.textContent = formatTime(currentSeconds);
+                
+                if (totalSeconds > 0) {
+                    const progressPercent = (currentSeconds / totalSeconds) * 100;
+                    progress.style.width = `${progressPercent}%`;
+                }
+            });
+            
+            // 点击进度条跳转
+            const progressBar = document.querySelector('.progress-bar');
+            progressBar.addEventListener('click', function(e) {
+                const rect = progressBar.getBoundingClientRect();
+                const clickPosition = (e.clientX - rect.left) / rect.width;
+                const totalSeconds = Math.floor(bgMusic.duration);
+                
+                if (totalSeconds > 0) {
+                    bgMusic.currentTime = clickPosition * totalSeconds;
+                }
+            });
+            
+            // 喜欢按钮事件
+            likeBtn.addEventListener('click', function() {
+                likeBtn.classList.toggle('active');
+                const icon = likeBtn.querySelector('i');
+                const text = likeBtn.querySelector('span');
+                
+                if (likeBtn.classList.contains('active')) {
+                    icon.className = 'fas fa-heart';
+                    text.textContent = '已喜欢';
+                    
+                    // 点赞时触发礼花
+                    fireworks.triggerMultiple(2);
+                } else {
+                    icon.className = 'far fa-heart';
+                    text.textContent = '喜欢';
+                }
+            });
+            
+            // 礼花按钮事件
+            fireworksBtn.addEventListener('click', function() {
+                fireworks.triggerMultiple(5);
+            });
+            
+            // 分享按钮事件
+            document.getElementById('share-btn').addEventListener('click', function() {
+                // 复制链接到剪贴板
+                const url = window.location.href;
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('链接已复制到剪贴板！\n\n可以分享给朋友了！');
+                    fireworks.triggerMultiple(2);
+                }).catch(() => {
+                    // 如果剪贴板API不可用，显示提示
+                    alert('请手动复制链接分享：\n\n' + url);
+                });
+            });
+            
+            // 留言按钮事件
+            document.getElementById('comment-btn').addEventListener('click', function() {
+                alert('留言功能：可以发送邮件或消息到作者。');
+                fireworks.triggerMultiple(1);
+            });
+            
+            // 点击信件内容随机触发礼花
+            letterContent.addEventListener('click', function(e) {
+                // 只有20%的几率触发
+                if (Math.random() < 0.2) {
+                    fireworks.triggerFirework(e.clientX, e.clientY);
+                }
+            });
+            
+            // 页面加载完成后触发欢迎礼花
+            window.addEventListener('load', function() {
+                setTimeout(() => {
+                    fireworks.triggerMultiple(3);
+                }, 1000);
+            });
+        }
+        
+        // 格式化时间函数 (秒 -> 分:秒)
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+# 当提交推送到您的默认分支时，此工作流将构建并推送一个 Node.js 应用程序到 Azure Web 应用程序。
+#
+# 此工作流假定您已创建目标 Azure 应用服务 Web 应用程序。
+# 有关说明，请参阅 https://docs.microsoft.com/en-us/azure/app-service/quickstart-nodejs?tabs=linux&pivots=development-environment-cli
+#
+# 配置此工作流：
+#
+# 1. 下载适用于你的 Azure Web 应用的发布配置文件。你可以从 Azure 门户中 Web 应用的“概览”页面下载此文件。
+# 了解更多信息：https://docs.microsoft.com/en-us/azure/app-service/deploy-github-actions?tabs=applevel#generate-deployment-credentials
+#
+# 2. 在您的仓库中创建一个名为AZURE_WEBAPP_PUBLISH_PROFILE的密钥，将发布配置文件内容粘贴为该密钥的值。
+# 有关获取发布配置文件的说明，请参阅：https://docs.microsoft.com/azure/app-service/deploy-github-actions#configure-the-github-secret
+#
+# 3. 更改AZURE_WEBAPP_NAME的值。您还可以选择更改下面的AZURE_WEBAPP_PACKAGE_PATH和NODE_VERSION环境变量。
+#
+# 有关Azure GitHub Actions的更多信息：https://github.com/Azure/Actions
+# 有关 Azure Web Apps 部署操作的更多信息：https://github.com/Azure/webapps-deploy
+# 有关开始使用 GitHub Action 工作流部署到 Azure 的更多示例：https://github.com/Azure/actions-workflow-samples
+
+触发:
+推送:
+分支: [ "main" ]
+  工作流调度:
+
+环境:
+AZURE_WEBAPP_NAME: your-app-name# 将此设置为您的应用程序名称
+AZURE_WEBAPP_PACKAGE_PATH: '.'      # 将此设置为您的 Web 应用项目路径，默认为仓库根目录
+NODE_VERSION: '20.x'                # 将此设置为要使用的 Node.js 版本
+
+权限:
+读取
+
+作业:
+  build:
+运行于: 
+步骤:
+    - 使用: actions/checkout@v4
+
+    - name: 设置 Node.js
+      uses: actions/setup-node@v4
+
+节点版本: ${{env.NODE_VERSION}}
+缓存: 'npm'
+
+    - 名称: npm install, build, and test
+
+npm 安装
+npm 运行构建 --如果存在
+npm 运行测试 --如果存在
+
+    - 名称: Upload artifact for deployment job
+使用: actions/upload-artifact@v4
+与:
+名称: node-app
+        path: .
+
+  deploy:
+
+内容: 无
+运行于: 
+    needs: build
+环境:
+名称: '开发'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+步骤:
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v4
+与:
+        name: node-app
+
+    - name: 'Deploy to Azure WebApp'
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+与:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
